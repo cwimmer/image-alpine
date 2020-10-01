@@ -1,0 +1,14 @@
+# -*- mode: makefile;-*-
+.PHONY: update-versions commit-updates
+
+YQ = $(shell cat YQ_VERSION)
+PWD = $(shell pwd)
+DATE = $(shell date +%Y-%m-%dT%H:%M:%S%z)
+
+update-versions:
+	curl -s http://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/x86_64/latest-releases.yaml >\
+	latest-releases.yaml
+	docker run -v $(PWD):/src mikefarah/yq:$(YQ) yq read /src/latest-releases.yaml -j | \
+	jq .[0].version | tr -d '"' > ALPINE_VERSION
+	cat ALPINE_VERSION | cut -d '.' -f 1-2 > ALPINE_SHORT_VERSION
+
