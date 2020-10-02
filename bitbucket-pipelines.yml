@@ -1,0 +1,52 @@
+image: cwimmer/build:stable
+options:
+  max-time: 5
+clone:
+  depth: full
+
+pipelines:
+  custom:
+    update-dependencies:
+      - step:
+          name: Update to latest version of dependencies
+          caches:
+            - docker
+          services:
+            - docker
+          script:
+            - make update-versions
+            - make update-submodule
+            - for i in $(ls *_VERSION); do echo -n "$i:" ; cat $i; done
+            - make commit-updates
+          
+  branches:
+    main:
+      - step:
+          name: Build Alpine image
+          deployment: Digital_Ocean_Registry
+          services:
+            - docker
+          script:
+            - make update-submodule
+            - make build
+            - make upload
+            - make commit-updates
+      - step:
+          name: Rebuild image-build with this image
+          caches:
+            - docker
+          services:
+            - docker
+          script:
+            - pipe: atlassian/trigger-pipeline:4.2.0
+              variables:
+                BITBUCKET_USERNAME: 'cwimmer'
+                BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+                REPOSITORY: 'image-build'
+                # ACCOUNT: '<string>' # Optional
+                BRANCH_NAME: 'develop' # Optional
+                CUSTOM_PIPELINE_NAME: 'release-tests' # Optional
+                # PIPELINE_VARIABLES: '<json>' # Optional
+                WAIT: 'true' # Optional
+                # WAIT_MAX_TIMEOUT: '<string>' # Optional
+                # DEBUG: '<boolean>' # Optional
