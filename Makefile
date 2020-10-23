@@ -3,7 +3,7 @@
 
 alpine_short_version=$(shell cat ALPINE_SHORT_VERSION)
 alpine_version=$(shell cat ALPINE_VERSION)
-DATE = $(shell date +%Y-%m-%dT%H-%M-%S%z)
+DATE = $(shell date -u +%Y-%m-%dT%H-%M-%S)
 IMAGE_NAME=registry.digitalocean.com/cwimmer/alpine
 IMAGE_NAME_INTERMEDIATE=$(IMAGE_NAME):intermediate
 
