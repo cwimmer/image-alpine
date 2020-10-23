@@ -31,10 +31,11 @@ build:
 	echo $(alpine_short_version).$(DATE) > ALPINE_LOCAL_VERSION
 	docker build -t $(IMAGE_NAME_INTERMEDIATE) docker-alpine/x86_64
 	docker build -t $(IMAGE_NAME):`cat ALPINE_LOCAL_VERSION` dockerfile
+	docker tag $(IMAGE_NAME):`cat ALPINE_LOCAL_VERSION` $(IMAGE_NAME):`cat ALPINE_VERSION`
 
 upload:
 	docker login registry.digitalocean.com \
 	--username $(DO_REG_USERNAME) \
 	--password $(DO_REG_PASSWORD)
-	docker push $(IMAGE_NAME):$(shell cat ALPINE_LOCAL_VERSION)
-
+	docker push $(IMAGE_NAME):`cat ALPINE_LOCAL_VERSION`
+	docker push $(IMAGE_NAME):`cat ALPINE_VERSION`
