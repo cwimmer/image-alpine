@@ -21,9 +21,10 @@ commit-updates:
 	git push
 
 update-submodule:
-	cd docker-alpine; \
-	git checkout master; \
-	git pull; \
+	git submodule update --init --recursive	&& \
+	cd docker-alpine && \
+	git checkout master && \
+	git pull && \
 	git checkout v$(alpine_short_version)
 
 build:
