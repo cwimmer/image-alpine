@@ -15,7 +15,7 @@ update-versions:
 commit-updates:
 	git add *_VERSION docker-alpine .gitmodules
 	git diff-index --quiet HEAD || git commit \
-	-m "Local Version: $(shell cat ALPINE_LOCAL_VERSION)"
+	-m "Local Version: $(shell cat ALPINE_LOCAL_VERSION)" \
 	-m "Alpine: $(alpine_version)" \
 	-m "Updating versions Alpine: $(alpine_short_version)" \
 	git push
