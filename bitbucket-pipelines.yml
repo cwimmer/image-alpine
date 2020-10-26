@@ -42,11 +42,11 @@ pipelines:
               variables:
                 BITBUCKET_USERNAME: 'cwimmer'
                 BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                REPOSITORY: 'image-build'
+                REPOSITORY: 'image-golang'
                 # ACCOUNT: '<string>' # Optional
-                BRANCH_NAME: 'develop' # Optional
-                CUSTOM_PIPELINE_NAME: 'release-tests' # Optional
+                BRANCH_NAME: 'main' # Optional
+                # CUSTOM_PIPELINE_NAME: 'release-tests' # Optional
                 # PIPELINE_VARIABLES: '<json>' # Optional
-                WAIT: 'true' # Optional
+                WAIT: 'false' # Optional
                 # WAIT_MAX_TIMEOUT: '<string>' # Optional
                 # DEBUG: '<boolean>' # Optional
