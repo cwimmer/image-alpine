@@ -30,7 +30,7 @@ pipelines:
             - make update-submodule
             - make build
             - make upload
-            - make commit-updates
+            - make commit-updates-pipeline
       - step:
           name: Rebuild image-build with this image
           caches:
