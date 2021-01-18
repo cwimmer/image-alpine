@@ -47,3 +47,8 @@ upload:
 	--password $(DO_REG_PASSWORD)
 	docker push $(IMAGE_NAME):`cat ALPINE_LOCAL_VERSION`
 	docker push $(IMAGE_NAME):`cat ALPINE_VERSION`
+
+pre-commit: Dockerfile
+	pre-commit install
+	pre-commit autoupdate
+	pre-commit run --all-files
