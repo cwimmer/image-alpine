@@ -38,7 +38,7 @@ pipelines:
           services:
             - docker
           script:
-            - pipe: atlassian/trigger-pipeline:4.2.0
+            - pipe: atlassian/trigger-pipeline:4.2.1
               variables:
                 BITBUCKET_USERNAME: 'cwimmer'
                 BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
