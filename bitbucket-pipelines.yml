@@ -44,7 +44,7 @@ pipelines:
                 BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
                 REPOSITORY: 'image-golang'
                 # ACCOUNT: '<string>' # Optional
-                BRANCH_NAME: 'main'  # Optional
+                BRANCH_NAME: 'develop'  # Optional
                 CUSTOM_PIPELINE_NAME: 'update-dependencies'
                 # PIPELINE_VARIABLES: '<json>' # Optional
                 WAIT: 'false'  # Optional
@@ -63,7 +63,7 @@ pipelines:
                 BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
                 REPOSITORY: 'image-hugo'
                 # ACCOUNT: '<string>' # Optional
-                BRANCH_NAME: 'main'  # Optional
+                BRANCH_NAME: 'develop'  # Optional
                 CUSTOM_PIPELINE_NAME: 'update-dependencies'
                 # PIPELINE_VARIABLES: '<json>' # Optional
                 WAIT: 'false'  # Optional
@@ -82,7 +82,7 @@ pipelines:
                 BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
                 REPOSITORY: 'image-imagemagick'
                 # ACCOUNT: '<string>' # Optional
-                BRANCH_NAME: 'main'  # Optional
+                BRANCH_NAME: 'develop'  # Optional
                 CUSTOM_PIPELINE_NAME: 'update-dependencies'
                 # PIPELINE_VARIABLES: '<json>' # Optional
                 WAIT: 'false'  # Optional
