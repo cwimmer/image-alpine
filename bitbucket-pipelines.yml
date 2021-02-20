@@ -31,60 +31,61 @@ pipelines:
             - make build
             - make upload
             - make commit-updates-pipeline
-      - step:
-          name: Rebuild image-golang with this image
-          caches:
-            - docker
-          services:
-            - docker
-          script:
-            - pipe: atlassian/trigger-pipeline:4.2.1
-              variables:
-                BITBUCKET_USERNAME: 'cwimmer'
-                BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                REPOSITORY: 'image-golang'
-                # ACCOUNT: '<string>' # Optional
-                BRANCH_NAME: 'develop'  # Optional
-                CUSTOM_PIPELINE_NAME: 'update-dependencies'
-                # PIPELINE_VARIABLES: '<json>' # Optional
-                WAIT: 'false'  # Optional
-                # WAIT_MAX_TIMEOUT: '<string>' # Optional
-                # DEBUG: '<boolean>' # Optional
-      - step:
-          name: Rebuild image-hugo with this image
-          caches:
-            - docker
-          services:
-            - docker
-          script:
-            - pipe: atlassian/trigger-pipeline:4.2.1
-              variables:
-                BITBUCKET_USERNAME: 'cwimmer'
-                BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                REPOSITORY: 'image-hugo'
-                # ACCOUNT: '<string>' # Optional
-                BRANCH_NAME: 'develop'  # Optional
-                CUSTOM_PIPELINE_NAME: 'update-dependencies'
-                # PIPELINE_VARIABLES: '<json>' # Optional
-                WAIT: 'false'  # Optional
-                # WAIT_MAX_TIMEOUT: '<string>' # Optional
-                # DEBUG: '<boolean>' # Optional
-      - step:
-          name: Rebuild image-imagemagick with this image
-          caches:
-            - docker
-          services:
-            - docker
-          script:
-            - pipe: atlassian/trigger-pipeline:4.2.1
-              variables:
-                BITBUCKET_USERNAME: 'cwimmer'
-                BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                REPOSITORY: 'image-imagemagick'
-                # ACCOUNT: '<string>' # Optional
-                BRANCH_NAME: 'develop'  # Optional
-                CUSTOM_PIPELINE_NAME: 'update-dependencies'
-                # PIPELINE_VARIABLES: '<json>' # Optional
-                WAIT: 'false'  # Optional
-                # WAIT_MAX_TIMEOUT: '<string>' # Optional
-                # DEBUG: '<boolean>' # Optional
+      - parallel:
+          - step:
+              name: Rebuild image-golang with this image
+              caches:
+                - docker
+              services:
+                - docker
+              script:
+                - pipe: atlassian/trigger-pipeline:4.2.1
+                  variables:
+                    BITBUCKET_USERNAME: 'cwimmer'
+                    BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+                    REPOSITORY: 'image-golang'
+                    # ACCOUNT: '<string>' # Optional
+                    BRANCH_NAME: 'main'  # Optional
+                    CUSTOM_PIPELINE_NAME: 'update-dependencies'
+                    # PIPELINE_VARIABLES: '<json>' # Optional
+                    WAIT: 'false'  # Optional
+                    # WAIT_MAX_TIMEOUT: '<string>' # Optional
+                    # DEBUG: '<boolean>' # Optional
+          - step:
+              name: Rebuild image-hugo with this image
+              caches:
+                - docker
+              services:
+                - docker
+              script:
+                - pipe: atlassian/trigger-pipeline:4.2.1
+                  variables:
+                    BITBUCKET_USERNAME: 'cwimmer'
+                    BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+                    REPOSITORY: 'image-hugo'
+                    # ACCOUNT: '<string>' # Optional
+                    BRANCH_NAME: 'develop'  # Optional
+                    CUSTOM_PIPELINE_NAME: 'update-dependencies'
+                    # PIPELINE_VARIABLES: '<json>' # Optional
+                    WAIT: 'false'  # Optional
+                    # WAIT_MAX_TIMEOUT: '<string>' # Optional
+                    # DEBUG: '<boolean>' # Optional
+          - step:
+              name: Rebuild image-imagemagick with this image
+              caches:
+                - docker
+              services:
+                - docker
+              script:
+                - pipe: atlassian/trigger-pipeline:4.2.1
+                  variables:
+                    BITBUCKET_USERNAME: 'cwimmer'
+                    BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+                    REPOSITORY: 'image-imagemagick'
+                    # ACCOUNT: '<string>' # Optional
+                    BRANCH_NAME: 'develop'  # Optional
+                    CUSTOM_PIPELINE_NAME: 'update-dependencies'
+                    # PIPELINE_VARIABLES: '<json>' # Optional
+                    WAIT: 'false'  # Optional
+                    # WAIT_MAX_TIMEOUT: '<string>' # Optional
+                    # DEBUG: '<boolean>' # Optional
