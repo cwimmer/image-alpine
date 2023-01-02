@@ -39,13 +39,14 @@ pipelines:
               services:
                 - docker
               script:
-                - pipe: atlassian/trigger-pipeline:4.3.1
+                - pipe: atlassian/trigger-pipeline:5.0.1
                   variables:
                     BITBUCKET_USERNAME: 'cwimmer'
                     BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
                     REPOSITORY: 'image-golang'
                     # ACCOUNT: '<string>' # Optional
-                    BRANCH_NAME: 'main'  # Optional
+                    REF_NAME: 'main'
+                    REF_TYPE: 'branch'
                     CUSTOM_PIPELINE_NAME: 'update-dependencies'
                     # PIPELINE_VARIABLES: '<json>' # Optional
                     WAIT: 'false'  # Optional
@@ -58,13 +59,14 @@ pipelines:
               services:
                 - docker
               script:
-                - pipe: atlassian/trigger-pipeline:4.3.1
+                - pipe: atlassian/trigger-pipeline:5.0.1
                   variables:
                     BITBUCKET_USERNAME: 'cwimmer'
                     BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
                     REPOSITORY: 'image-hugo'
                     # ACCOUNT: '<string>' # Optional
-                    BRANCH_NAME: 'develop'  # Optional
+                    REF_NAME: 'develop'
+                    REF_TYPE: 'branch'
                     CUSTOM_PIPELINE_NAME: 'update-dependencies'
                     # PIPELINE_VARIABLES: '<json>' # Optional
                     WAIT: 'false'  # Optional
@@ -77,13 +79,14 @@ pipelines:
               services:
                 - docker
               script:
-                - pipe: atlassian/trigger-pipeline:4.3.1
+                - pipe: atlassian/trigger-pipeline:5.0.1
                   variables:
                     BITBUCKET_USERNAME: 'cwimmer'
                     BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
                     REPOSITORY: 'image-imagemagick'
                     # ACCOUNT: '<string>' # Optional
-                    BRANCH_NAME: 'develop'  # Optional
+                    REF_NAME: 'develop'
+                    REF_TYPE: 'branch'
                     CUSTOM_PIPELINE_NAME: 'update-dependencies'
                     # PIPELINE_VARIABLES: '<json>' # Optional
                     WAIT: 'false'  # Optional
