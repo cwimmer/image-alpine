@@ -1,0 +1,27 @@
+{
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.makefile-tools",
+        "Gruntfuggly.todo-tree",
+        "DavidAnson.vscode-markdownlint",
+        "sst-dev.opencode"
+      ],
+      "settings": {
+        "[makefile]": {
+          "editor.insertSpaces": false,
+          "editor.detectIndentation": false
+        }
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:3": {},
+  },
+  "image": "ghcr.io/cwimmer/devcontainer:opencode",
+  "mounts": [
+    "source=image-alpine-opencode-data,target=/root/.local/share/opencode,type=volume"
+  ],
+  "name": "image-alpine-devcontainer",
+  "postCreateCommand": "make postCreateCommand"
+}

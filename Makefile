@@ -9,6 +9,9 @@ IMAGE_NAME_INTERMEDIATE=$(IMAGE_NAME):intermediate
 
 all: update-submodule build upload commit-updates
 
+postCreateCommand:
+	@echo "Post create command executed"
+
 update-versions:
 	$(MAKE) -f Makefile.update update-versions
 
