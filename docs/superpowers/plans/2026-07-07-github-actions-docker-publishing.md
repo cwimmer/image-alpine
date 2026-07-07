@@ -119,7 +119,7 @@ This is the exact expression the `fanout` job uses; it must print nothing while 
 Run:
 
 ```bash
-grep -vE '^[[:space:]]*(#|$)' .github/downstream-repos.txt | tr -d '[:space:]' | paste -sd ',' -
+grep -vE '^[[:space:]]*(#|$)' .github/downstream-repos.txt | tr -d '[:blank:]' | paste -sd ',' - || true
 ```
 
 Expected: empty output (a single blank line), confirming the stub is disabled.
@@ -250,8 +250,8 @@ jobs:
           repos=""
           if [ -f .github/downstream-repos.txt ]; then
             repos="$(grep -vE '^[[:space:]]*(#|$)' \
-              .github/downstream-repos.txt | tr -d '[:space:]' \
-              | paste -sd ',' -)"
+              .github/downstream-repos.txt | tr -d '[:blank:]' \
+              | paste -sd ',' - || true)"
           fi
           echo "repos=$repos" >> "$GITHUB_OUTPUT"
           if [ -n "$repos" ] && [ -n "$FANOUT_TOKEN" ]; then
@@ -425,10 +425,10 @@ The design/plan under `docs/` intentionally mention Bitbucket and `develop`, so 
 Run:
 
 ```bash
-git grep -nEi 'bitbucket|develop' -- ':(exclude)docs/'
+git grep -nEi 'bitbucket' -- ':(exclude)docs/'
 ```
 
-Expected: no output (exit code `1` from `git grep` when there are no matches).
+Expected: no output (exit code `1` from `git grep`) — Bitbucket is fully removed from non-doc files. A follow-up `git grep -nEi 'develop' -- ':(exclude)docs/'` should return only the two legitimate `README.md` lines (the `## Development workflow` heading and the "no `develop` branch" statement), not any operational `develop`-branch usage.
 
 - [ ] **Step 3: Verify the full pre-commit suite is green**
 
