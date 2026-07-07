@@ -101,8 +101,8 @@ jobs:
           repos=""
           if [ -f .github/downstream-repos.txt ]; then
             repos="$(grep -vE '^[[:space:]]*(#|$)' \
-              .github/downstream-repos.txt | tr -d '[:space:]' \
-              | paste -sd ',' -)"
+              .github/downstream-repos.txt | tr -d '[:blank:]' \
+              | paste -sd ',' - || true)"
           fi
           echo "repos=$repos" >> "$GITHUB_OUTPUT"
           if [ -n "$repos" ] && [ -n "$FANOUT_TOKEN" ]; then
