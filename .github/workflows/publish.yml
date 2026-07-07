@@ -1,0 +1,133 @@
+---
+name: Build and publish Alpine image
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-main
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Update Alpine version
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.bump.outputs.changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          submodules: recursive
+      - name: Configure git identity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email \
+            '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Update versions and submodule
+        id: bump
+        run: |
+          before="$(cat ALPINE_VERSION)"
+          make update-versions
+          make update-submodule
+          after="$(cat ALPINE_VERSION)"
+          if [ "$before" != "$after" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Commit version bump
+        run: make commit-updates
+
+  build-publish:
+    name: Build and publish
+    needs: [update]
+    if: >-
+      always() &&
+      (needs.update.result == 'skipped' ||
+      (needs.update.result == 'success' &&
+      (github.event_name == 'workflow_dispatch' ||
+      needs.update.outputs.changed == 'true')))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          submodules: recursive
+      - name: Configure git identity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email \
+            '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Update submodule
+        run: make update-submodule
+      - name: Build image
+        run: make build
+      - name: Publish image
+        run: make upload
+        env:
+          DO_REG_USERNAME: ${{ secrets.DO_REG_USERNAME }}
+          DO_REG_PASSWORD: ${{ secrets.DO_REG_PASSWORD }}
+      - name: Commit local version
+        run: make commit-updates-pipeline
+
+  fanout:
+    name: Trigger downstream rebuilds
+    needs: [build-publish]
+    if: needs.build-publish.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Determine enabled downstream repos
+        id: cfg
+        env:
+          FANOUT_TOKEN: ${{ secrets.FANOUT_TOKEN }}
+        run: |
+          repos=""
+          if [ -f .github/downstream-repos.txt ]; then
+            repos="$(grep -vE '^[[:space:]]*(#|$)' \
+              .github/downstream-repos.txt | tr -d '[:space:]' \
+              | paste -sd ',' -)"
+          fi
+          echo "repos=$repos" >> "$GITHUB_OUTPUT"
+          if [ -n "$repos" ] && [ -n "$FANOUT_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Dispatch downstream rebuilds
+        if: steps.cfg.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.FANOUT_TOKEN }}
+          REPOS: ${{ steps.cfg.outputs.repos }}
+        run: |
+          tag="$(cat ALPINE_VERSION)"
+          local_tag="$(cat ALPINE_LOCAL_VERSION)"
+          image="registry.digitalocean.com/cwimmer/alpine"
+          IFS=',' read -ra list <<< "$REPOS"
+          for repo in "${list[@]}"; do
+            echo "Dispatching base-image-updated to cwimmer/$repo"
+            jq -n \
+              --arg image "$image" \
+              --arg tag "$tag" \
+              --arg local_tag "$local_tag" \
+              '{event_type: "base-image-updated",
+                client_payload: {image: $image, tag: $tag,
+                                 local_tag: $local_tag}}' \
+              | gh api "repos/cwimmer/$repo/dispatches" --input -
+          done
