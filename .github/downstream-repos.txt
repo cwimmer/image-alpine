@@ -1,0 +1,9 @@
+# Downstream repositories to notify after a successful publish.
+#
+# Uncomment a repository (one name per line, in the cwimmer org) to have the
+# fanout job send it a `base-image-updated` repository_dispatch event.
+# Enabling also requires the FANOUT_TOKEN secret to be set.
+#
+# image-golang
+# image-hugo
+# image-imagemagick
